@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Security Exposure Check — PROTECDATA</title>
+<meta name="description" content="A free, 60-second self-check for accounting and tax practices to see where they stand on cybersecurity — instant result, no sign-up.">
+<meta property="og:title" content="Security Exposure Check — PROTECDATA">
+<meta property="og:description" content="Free 60-second cybersecurity exposure check for independent accounting & tax practices. Instant result, no sign-up.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --navy: #0D1B2A;
+  --navy-soft: #16283D;
+  --gold: #C9A84C;
+  --gold-soft: #E3D4A3;
+  --paper: #FBFAF7;
+  --ink: #1C2530;
+  --ink-mute: #5B6673;
+  --hairline: #D8DCE1;
+  --card: #FFFFFF;
+  --risk-low: #3F7556;
+  --risk-mid: #B07F2A;
+  --risk-high: #A6432E;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1620;
+    --card: #182331;
+    --ink: #E8EAED;
+    --ink-mute: #9AA5B1;
+    --hairline: #2A3645;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1620;
+  --card: #182331;
+  --ink: #E8EAED;
+  --ink-mute: #9AA5B1;
+  --hairline: #2A3645;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+}
+
+.wrap {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 18px 40px 18px;
+}
+
+.brand {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.brand .mark { font-weight: 700; font-size: 14px; letter-spacing: 0.04em; color: var(--navy); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand .mark { color: #EDEFF2; }
+}
+:root[data-theme="dark"] .brand .mark { color: #EDEFF2; }
+.brand .mark span { color: var(--gold); }
+.brand .tag { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.03em; text-transform: uppercase; }
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 30px 26px 26px 26px;
+  box-shadow: 0 1px 2px rgba(13,27,42,0.04);
+}
+
+/* intro */
+.intro h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
+  margin: 0 0 10px 0;
+  color: var(--navy);
+}
+@media (prefers-color-scheme: dark) { .intro h1 { color: #F2EFE8; } }
+:root[data-theme="dark"] .intro h1 { color: #F2EFE8; }
+.intro p {
+  font-size: 14.5px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+  margin: 0 0 22px 0;
+}
+.intro .meta {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding: 14px 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+.intro .meta div { font-size: 12px; color: var(--ink-mute); }
+.intro .meta strong { display: block; color: var(--ink); font-size: 14px; font-weight: 600; }
+
+/* progress */
+.progress-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.progress-row .seg {
+  flex: 1;
+  height: 3px;
+  background: var(--hairline);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-row .seg.done { background: var(--gold); }
+.progress-row .seg.current { background: linear-gradient(to right, var(--gold) 50%, var(--hairline) 50%); }
+
+.qnum { font-size: 12px; color: var(--gold); font-weight: 600; letter-spacing: 0.03em; margin-bottom: 8px; }
+.question {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--navy);
+  margin: 0 0 20px 0;
+}
+@media (prefers-color-scheme: dark) { .question { color: #F2EFE8; } }
+:root[data-theme="dark"] .question { color: #F2EFE8; }
+
+.options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 6px; }
+.opt {
+  text-align: left;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--ink);
+  padding: 13px 16px;
+  border-radius: 3px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.opt:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+.opt:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.opt.selected { border-color: var(--gold); background: rgba(201,168,76,0.12); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+.btn-text {
+  background: none; border: none; color: var(--ink-mute); font-size: 13px;
+  font-family: 'Outfit', sans-serif; cursor: pointer; padding: 6px 2px;
+}
+.btn-text:hover { color: var(--ink); }
+.btn-primary {
+  background: var(--navy); color: #fff; border: none; padding: 11px 22px;
+  border-radius: 3px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s ease;
+}
+.btn-primary:hover { background: var(--navy-soft); }
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-start {
+  background: var(--navy); color: #fff; border: none; padding: 13px 26px;
+  border-radius: 3px; font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 600;
+  cursor: pointer; width: 100%;
+}
+.btn-start:hover { background: var(--navy-soft); }
+
+/* result */
+.result-tier {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 5px 11px;
+  border-radius: 3px;
+  margin-bottom: 14px;
+}
+.result-tier.low { background: rgba(63,117,86,0.12); color: var(--risk-low); }
+.result-tier.mid { background: rgba(176,127,42,0.14); color: var(--risk-mid); }
+.result-tier.high { background: rgba(166,67,46,0.13); color: var(--risk-high); }
+
+.result h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+  line-height: 1.3;
+  color: var(--navy);
+  margin: 0 0 12px 0;
+}
+@media (prefers-color-scheme: dark) { .result h2 { color: #F2EFE8; } }
+:root[data-theme="dark"] .result h2 { color: #F2EFE8; }
+
+.result p { font-size: 14px; color: var(--ink-mute); line-height: 1.65; margin: 0 0 14px 0; }
+
+.score-bar-row { display: flex; align-items: center; gap: 10px; margin: 18px 0 22px 0; }
+.score-bar { flex: 1; height: 6px; background: var(--hairline); border-radius: 3px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.score-label { font-size: 12.5px; color: var(--ink-mute); white-space: nowrap; }
+
+.flags { margin: 0 0 22px 0; padding: 0; list-style: none; }
+.flags li {
+  font-size: 13.5px; color: var(--ink); padding: 8px 0 8px 18px; position: relative;
+  border-bottom: 1px solid var(--hairline);
+}
+.flags li:last-child { border-bottom: none; }
+.flags li::before { content: "—"; position: absolute; left: 0; color: var(--gold); }
+
+.cta-box {
+  background: var(--navy);
+  border-radius: 4px;
+  padding: 20px 20px 18px 20px;
+  margin-top: 4px;
+}
+.cta-box p { color: #C3CAD3; font-size: 13px; margin: 0 0 14px 0; line-height: 1.6; }
+.cta-box .price { color: var(--gold-soft); font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: var(--navy); text-decoration: none;
+  font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+  padding: 11px 18px; border-radius: 3px; width: 100%; justify-content: center;
+}
+
+.restart { text-align: center; margin-top: 16px; }
+.restart button {
+  background: none; border: none; color: var(--ink-mute); font-size: 12.5px;
+  text-decoration: underline; cursor: pointer; font-family: 'Outfit', sans-serif;
+}
+
+.foot {
+  width: 100%; max-width: 480px; text-align: center; margin-top: 18px;
+  font-size: 10.5px; color: var(--ink-mute); line-height: 1.6;
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand">
+    <div class="mark">PROTEC<span>DATA</span></div>
+    <div class="tag">Security for accounting practices</div>
+  </div>
+
+  <div class="card">
+
+    <!-- INTRO -->
+    <div id="screen-intro" class="intro">
+      <h1>Where does your practice stand on security?</h1>
+      <p>Six quick questions about how your practice handles passwords, backups, and client data — the same areas the IRS expects a tax preparer's security plan to cover.</p>
+      <div class="meta">
+        <div><strong>60 sec</strong>time to complete</div>
+        <div><strong>6</strong>questions</div>
+        <div><strong>Instant</strong>result</div>
+      </div>
+      <button class="btn-start" id="start-btn">Start the check</button>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="screen-quiz" class="hidden">
+      <div class="progress-row" id="progress-row"></div>
+      <div class="qnum" id="qnum"></div>
+      <div class="question" id="qtext"></div>
+      <div class="options" id="options"></div>
+      <div class="nav-row">
+        <button class="btn-text" id="back-btn">Back</button>
+        <button class="btn-primary" id="next-btn" disabled>Next</button>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="screen-result" class="hidden result">
+      <div id="result-tier" class="result-tier"></div>
+      <h2 id="result-headline"></h2>
+      <p id="result-sub"></p>
+
+      <div class="score-bar-row">
+        <div class="score-bar"><div class="score-bar-fill" id="score-fill"></div></div>
+        <div class="score-label" id="score-label"></div>
+      </div>
+
+      <ul class="flags" id="flags"></ul>
+
+      <div class="cta-box">
+        <p>A full Security Assessment gives you a written report ranking your real exposures, with a checklist toward WISP readiness under IRS Publication 4557.</p>
+        <div class="price">$300 — one-time assessment</div>
+        <a class="cta-btn" id="wa-link" href="#" target="_blank" rel="noopener">Message Dylan on WhatsApp →</a>
+      </div>
+
+      <div class="restart"><button id="restart-btn">Start over</button></div>
+    </div>
+
+  </div>
+
+  <div class="foot">This is a directional self-check, not a substitute for a full assessment or legal advice.<br>PROTECDATA · Cybersecurity for professional practices</div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Does your practice have a written security plan (WISP) in place?",
+    opts: [
+      { t: "Yes, a formal written plan", risk: 0 },
+      { t: "Informally, nothing written", risk: 1 },
+      { t: "No", risk: 2 },
+      { t: "Not sure what this is", risk: 2 }
+    ],
+    flag: "No written security plan (WISP) on file — the baseline the IRS expects every preparer to have."
+  },
+  {
+    q: "Is two-factor authentication (2FA) enabled on your practice email?",
+    opts: [
+      { t: "Yes", risk: 0 },
+      { t: "No", risk: 2 },
+      { t: "Not sure", risk: 1 }
+    ],
+    flag: "Email account not confirmed to have two-factor authentication — the most common way accounts get taken over."
+  },
+  {
+    q: "If your computer failed right now, could you keep working within 2 hours?",
+    opts: [
+      { t: "Yes, backups are tested and ready", risk: 0 },
+      { t: "Probably, but never tested", risk: 1 },
+      { t: "No / not sure", risk: 2 }
+    ],
+    flag: "Recovery time after a device failure is untested or unclear."
+  },
+  {
+    q: "Has your team received any cybersecurity training in the past year?",
+    opts: [
+      { t: "Yes", risk: 0 },
+      { t: "No", risk: 2 }
+    ],
+    flag: "No cybersecurity training for staff in the past year."
+  },
+  {
+    q: "Do you know exactly who to contact if you suspect a security incident?",
+    opts: [
+      { t: "Yes, a clear process", risk: 0 },
+      { t: "Somewhat, nothing formal", risk: 1 },
+      { t: "No", risk: 2 }
+    ],
+    flag: "No clear incident-response contact or process in place."
+  },
+  {
+    q: "Does your current protection actively block ransomware, not just scan for known viruses?",
+    opts: [
+      { t: "Yes, confirmed", risk: 0 },
+      { t: "Not sure", risk: 1 },
+      { t: "No / basic antivirus only", risk: 2 }
+    ],
+    flag: "Current protection may not actively stop ransomware — basic antivirus alone often isn't enough."
+  }
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+const screenIntro = document.getElementById('screen-intro');
+const screenQuiz = document.getElementById('screen-quiz');
+const screenResult = document.getElementById('screen-result');
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  screenIntro.classList.add('hidden');
+  screenQuiz.classList.remove('hidden');
+  renderQuestion();
+});
+
+function renderProgress() {
+  const row = document.getElementById('progress-row');
+  row.innerHTML = '';
+  questions.forEach((_, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (i < current ? ' done' : i === current ? ' current' : '');
+    row.appendChild(seg);
+  });
+}
+
+function renderQuestion() {
+  renderProgress();
+  const item = questions[current];
+  document.getElementById('qnum').textContent = 'Question ' + (current + 1) + ' of ' + questions.length;
+  document.getElementById('qtext').textContent = item.q;
+
+  const optWrap = document.getElementById('options');
+  optWrap.innerHTML = '';
+  item.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt' + (answers[current] === i ? ' selected' : '');
+    btn.textContent = opt.t;
+    btn.addEventListener('click', () => {
+      answers[current] = i;
+      renderQuestion();
+    });
+    optWrap.appendChild(btn);
+  });
+
+  document.getElementById('back-btn').style.visibility = current === 0 ? 'hidden' : 'visible';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = answers[current] === null;
+  nextBtn.textContent = current === questions.length - 1 ? 'See result' : 'Next';
+}
+
+document.getElementById('back-btn').addEventListener('click', () => {
+  if (current > 0) { current--; renderQuestion(); }
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+  if (answers[current] === null) return;
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+
+function showResult() {
+  screenQuiz.classList.add('hidden');
+  screenResult.classList.remove('hidden');
+
+  let totalRisk = 0;
+  const maxRisk = questions.length * 2;
+  const flagList = [];
+
+  questions.forEach((item, i) => {
+    const chosen = item.opts[answers[i]];
+    totalRisk += chosen.risk;
+    if (chosen.risk >= 1) flagList.push(item.flag);
+  });
+
+  const pct = Math.round((totalRisk / maxRisk) * 100);
+  const fill = document.getElementById('score-fill');
+  fill.style.width = pct + '%';
+
+  const tierEl = document.getElementById('result-tier');
+  const headline = document.getElementById('result-headline');
+  const sub = document.getElementById('result-sub');
+  const scoreLabel = document.getElementById('score-label');
+
+  if (totalRisk <= 3) {
+    tierEl.textContent = 'LOWER EXPOSURE';
+    tierEl.className = 'result-tier low';
+    fill.style.background = 'var(--risk-low)';
+    headline.textContent = "You've covered the basics — a few gaps remain.";
+    sub.textContent = "Your practice has some real safeguards in place. A full assessment would confirm what's solid and close the specific gaps below.";
+  } else if (totalRisk <= 7) {
+    tierEl.textContent = 'MODERATE EXPOSURE';
+    tierEl.className = 'result-tier mid';
+    fill.style.background = 'var(--risk-mid)';
+    headline.textContent = "A few real gaps — worth addressing before filing season.";
+    sub.textContent = "Nothing here is unusual for a small practice, but each gap below is a common way practices get hit with ransomware or phishing.";
+  } else {
+    tierEl.textContent = 'HIGH EXPOSURE';
+    tierEl.className = 'result-tier high';
+    fill.style.background = 'var(--risk-high)';
+    headline.textContent = "Several gaps that attackers specifically look for.";
+    sub.textContent = "This combination — no written plan, untested backups, unclear response process — is exactly the profile ransomware operators target.";
+  }
+
+  scoreLabel.textContent = totalRisk + ' / ' + maxRisk + ' risk points';
+
+  const flagsEl = document.getElementById('flags');
+  flagsEl.innerHTML = '';
+  if (flagList.length === 0) {
+    const li = document.createElement('li');
+    li.textContent = 'No major gaps flagged in this quick check.';
+    flagsEl.appendChild(li);
+  } else {
+    flagList.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f;
+      flagsEl.appendChild(li);
+    });
+  }
+
+  const tierNameForMsg = totalRisk <= 3 ? 'Lower exposure' : (totalRisk <= 7 ? 'Moderate exposure' : 'High exposure');
+  let msgLines = [
+    "Hi Dylan, I just did the Security Exposure Check for my practice.",
+    "",
+    "Result: " + tierNameForMsg + " (" + totalRisk + "/" + maxRisk + " risk points)",
+    "",
+    "Gaps flagged:"
+  ];
+  if (flagList.length === 0) {
+    msgLines.push("- None flagged");
+  } else {
+    flagList.forEach(f => msgLines.push("- " + f));
+  }
+  msgLines.push("");
+  msgLines.push("I'd like to talk about the $300 Security Assessment.");
+
+  const waMsg = encodeURIComponent(msgLines.join("\n"));
+  document.getElementById('wa-link').href = 'https://wa.me/5491150462722?text=' + waMsg;
+}
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  screenResult.classList.add('hidden');
+  screenIntro.classList.remove('hidden');
+});
+</script>
+
+</body>
+</html>
